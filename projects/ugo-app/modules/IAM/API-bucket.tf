@@ -19,7 +19,9 @@ resource "aws_iam_policy" "s3_bucket_access" {
         ],
         Resource = [
           "arn:aws:s3:::ugo-private",
-          "arn:aws:s3:::ugo-private/*"
+          "arn:aws:s3:::ugo-private/*",
+          "arn:aws:s3:::ugo-private-dev",
+          "arn:aws:s3:::ugo-private-dev/*"
         ]
       }
     ]
