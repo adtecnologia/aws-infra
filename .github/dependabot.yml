@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Habilitar atualizações de versão para Terraform
+  - package-ecosystem: "terraform"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    assignees:
+      - "adtecnologia"
+    commit-message:
+      prefix: "terraform"
+      include: "scope"
+
+  # Habilitar atualizações de versão para GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    assignees:
+      - "adtecnologia"
+    commit-message:
+      prefix: "github-actions"
+      include: "scope"
