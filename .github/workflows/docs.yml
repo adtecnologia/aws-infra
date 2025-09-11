@@ -1,0 +1,75 @@
+name: Update Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.tf'
+      - '**/*.md'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.tf'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  docs:
+    name: Generate Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup terraform-docs
+        uses: terraform-docs/gh-actions@v1.2.0
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
+          args: --sort-by name
+
+      - name: Generate docs for projects
+        run: |
+          for project in projects/*/; do
+            if [ -f "$project/main.tf" ]; then
+              echo "Generating docs for $project"
+              terraform-docs markdown table --output-file README.md "$project"
+            fi
+          done
+
+      - name: Check for changes
+        id: verify-changed-files
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.verify-changed-files.outputs.changed == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "docs: auto-update terraform documentation" || exit 0
+          git push
+
+      - name: Comment on PR if docs changed
+        if: steps.verify-changed-files.outputs.changed == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '📝 **Documentation Update Required**\n\nThis PR includes Terraform changes that require documentation updates. Please run `terraform-docs` and commit the changes, or merge this PR to auto-update the documentation.'
+            })

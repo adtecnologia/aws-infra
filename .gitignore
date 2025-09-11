@@ -84,3 +84,12 @@ venv.bak/
 
 # Pre-commit
 .pre-commit-config.yaml.backup
+
+# Additional tool files
+.tflint.d/
+checkov-report.*
+infracost-report.*
+.secrets.baseline
+
+# Terraform docs temp files
+.terraform-docs.yml.bak

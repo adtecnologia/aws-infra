@@ -1,0 +1,70 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    "schedule:weekly",
+    ":semanticCommits",
+    ":dependencyDashboard"
+  ],
+  "timezone": "America/Sao_Paulo",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies", "automated"],
+  "assignees": ["@adtecnologia"],
+  "reviewers": ["@adtecnologia"],
+  "terraform": {
+    "enabled": true,
+    "fileMatch": ["\\.tf$"],
+    "pinDigests": false
+  },
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.tf$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\n.*?version\\s*=\\s*\"(?<currentValue>.*)\""
+      ]
+    },
+    {
+      "fileMatch": ["\\.yml$", "\\.yaml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s*\\n.*?version['\"]?\\s*:?=?\\s*['\"]?(?<currentValue>.*)['\"]?"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["terraform-provider"],
+      "groupName": "Terraform providers"
+    },
+    {
+      "matchDatasources": ["terraform-module"],
+      "groupName": "Terraform modules"
+    },
+    {
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": [
+        "hashicorp/terraform",
+        "terraform-linters/tflint",
+        "bridgecrewio/checkov"
+      ],
+      "groupName": "Terraform tools"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "major-update"],
+      "reviewers": ["@adtecnologia"],
+      "prPriority": 10
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["dependencies", "minor-update"],
+      "automerge": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "vulnerability"],
+    "assignees": ["@adtecnologia"],
+    "reviewers": ["@adtecnologia"]
+  },
+  "osvVulnerabilityAlerts": true
+}

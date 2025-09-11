@@ -1,0 +1,155 @@
+name: Terraform Drift Detection
+
+on:
+  schedule:
+    # Run every day at 9 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  TF_VERSION: "1.9.0"
+
+jobs:
+  drift-detection:
+    name: Detect Infrastructure Drift
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION || 'us-east-1' }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Check for drift in root configuration
+        id: root-drift
+        continue-on-error: true
+        run: |
+          terraform init
+          terraform plan -detailed-exitcode -no-color -out=root.tfplan
+          echo "exitcode=$?" >> $GITHUB_OUTPUT
+
+      - name: Check for drift in projects
+        id: projects-drift
+        continue-on-error: true
+        run: |
+          drift_detected=false
+          for project in projects/*/; do
+            if [ -f "$project/main.tf" ]; then
+              echo "Checking drift for $project"
+              cd "$project"
+              terraform init
+              if ! terraform plan -detailed-exitcode -no-color -out="$(basename $project).tfplan"; then
+                echo "Drift detected in $project"
+                drift_detected=true
+              fi
+              cd - > /dev/null
+            fi
+          done
+          echo "drift_detected=$drift_detected" >> $GITHUB_OUTPUT
+
+      - name: Create drift detection issue
+        if: steps.root-drift.outputs.exitcode == '2' || steps.projects-drift.outputs.drift_detected == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🚨 Infrastructure Drift Detected';
+            const body = `
+            ## Infrastructure Drift Detected
+            
+            Terraform drift detection has identified differences between the current infrastructure state and the configuration in this repository.
+            
+            **Detection Time:** ${new Date().toISOString()}
+            **Branch:** ${context.ref}
+            **Commit:** ${context.sha}
+            
+            ### What this means:
+            - The actual infrastructure differs from what's defined in Terraform
+            - Manual changes may have been made outside of Terraform
+            - Resources may have been modified by other tools or processes
+            
+            ### Recommended Actions:
+            1. Review the Terraform plan output in the workflow logs
+            2. Investigate what caused the drift
+            3. Update the Terraform configuration to match the desired state
+            4. Apply the changes through the proper CI/CD process
+            
+            ### Workflow Run:
+            [View detailed logs](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            
+            ---
+            *This issue was automatically created by the drift detection workflow.*
+            `;
+            
+            // Check if an open drift issue already exists
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'infrastructure,drift-detection,automated'
+            });
+            
+            const existingDriftIssue = existingIssues.data.find(issue => 
+              issue.title.includes('Infrastructure Drift Detected')
+            );
+            
+            if (existingDriftIssue) {
+              // Update existing issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingDriftIssue.number,
+                body: `🔄 **Drift Still Detected**\n\n${body}`
+              });
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['infrastructure', 'drift-detection', 'automated', 'high-priority']
+              });
+            }
+
+      - name: Close drift detection issue if no drift
+        if: steps.root-drift.outputs.exitcode != '2' && steps.projects-drift.outputs.drift_detected != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'infrastructure,drift-detection,automated'
+            });
+            
+            const existingDriftIssue = existingIssues.data.find(issue => 
+              issue.title.includes('Infrastructure Drift Detected')
+            );
+            
+            if (existingDriftIssue) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingDriftIssue.number,
+                body: '✅ **No Drift Detected**\n\nThe infrastructure is now in sync with the Terraform configuration. Closing this issue.'
+              });
+              
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingDriftIssue.number,
+                state: 'closed'
+              });
+            }
