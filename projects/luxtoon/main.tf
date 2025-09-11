@@ -8,3 +8,7 @@ module "S3" {
 module "IAM" {
   source = "./modules/IAM"
 }
+
+module "ECR" {
+  source = "./modules/ECR"
+}

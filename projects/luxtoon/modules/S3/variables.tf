@@ -1,3 +1,3 @@
 variable "region" {
-    type = map(string)
+  type = map(string)
 }

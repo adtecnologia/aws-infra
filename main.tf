@@ -30,7 +30,7 @@ module "ugo-app" {
 # Módulo para infraestrutura do Luxtoon
 module "luxtoon" {
   source = "./projects/luxtoon"
-  region = var.region 
+  region = var.region
 }
 
 # Módulo para infraestrutura do Plane
