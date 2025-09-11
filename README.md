@@ -125,4 +125,35 @@ Para dúvidas ou problemas, abra uma issue neste repositório.
 ## 📄 Documentação Terraform
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+
+## Providers
+
+No providers.
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_luxtoon"></a> [luxtoon](#module\_luxtoon) | ./projects/luxtoon | n/a |
+| <a name="module_plane"></a> [plane](#module\_plane) | ./projects/plane | n/a |
+| <a name="module_ugo-app"></a> [ugo-app](#module\_ugo-app) | ./projects/ugo-app | n/a |
+
+## Resources
+
+No resources.
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_region"></a> [region](#input\_region) | Mapa de regiões AWS disponíveis | `map(string)` | <pre>{<br>  "brasil": "sa-east-1",<br>  "us": "us-east-1"<br>}</pre> | no |
+
+## Outputs
+
+No outputs.
 <!-- END_TF_DOCS -->
