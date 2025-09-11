@@ -26,21 +26,39 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup terraform-docs
-        uses: terraform-docs/gh-actions@v1.2.0
-        with:
-          working-dir: .
-          output-file: README.md
-          output-method: inject
-          git-push: "true"
-          args: --sort-by name
+      - name: Install terraform-docs
+        run: |
+          TERRAFORM_DOCS_VERSION="0.17.0"
+          curl -sSLo ./terraform-docs.tar.gz "https://terraform-docs.io/dl/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-$(uname)-amd64.tar.gz"
+          tar -xzf terraform-docs.tar.gz
+          chmod +x terraform-docs
+          sudo mv terraform-docs /usr/local/bin/
+          terraform-docs --version
+
+      - name: Generate documentation for root
+        run: |
+          if [ -f "main.tf" ]; then
+            echo "Generating docs for root directory..."
+            terraform-docs markdown table --output-file README.md .
+          fi
 
       - name: Generate docs for projects
         run: |
           for project in projects/*/; do
             if [ -f "$project/main.tf" ]; then
               echo "Generating docs for $project"
-              terraform-docs markdown table --output-file README.md "$project"
+              cd "$project"
+              
+              # Create README if it doesn't exist
+              if [ ! -f "README.md" ]; then
+                echo "# $(basename $(pwd))" > README.md
+                echo "" >> README.md
+                echo "<!-- BEGIN_TF_DOCS -->" >> README.md
+                echo "<!-- END_TF_DOCS -->" >> README.md
+              fi
+              
+              terraform-docs markdown table --output-file README.md .
+              cd - > /dev/null
             fi
           done
 
@@ -49,8 +67,11 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Files changed:"
+            git status --porcelain
           else
             echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No documentation changes needed"
           fi
 
       - name: Commit changes
@@ -59,7 +80,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "docs: auto-update terraform documentation" || exit 0
+          git commit -m "docs: auto-update terraform documentation [skip ci]" || exit 0
           git push
 
       - name: Comment on PR if docs changed
@@ -71,5 +92,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '📝 **Documentation Update Required**\n\nThis PR includes Terraform changes that require documentation updates. Please run `terraform-docs` and commit the changes, or merge this PR to auto-update the documentation.'
+              body: '📝 **Documentation Update Required**\n\nThis PR includes Terraform changes that require documentation updates. The documentation will be automatically updated when this PR is merged, or you can run `./scripts/generate-docs.sh` locally and commit the changes.'
             })
