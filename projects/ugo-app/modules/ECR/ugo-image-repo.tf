@@ -28,12 +28,12 @@ resource "aws_ecr_lifecycle_policy" "ugo_image_repo_policy" {
     },
     {
       "rulePriority": 2,
-      "description": "Manter apenas as 3 imagens mais recentes com qualquer tag",
+      "description": "Manter apenas uma imagem mais recente com qualquer tag",
       "selection": {
         "tagStatus": "tagged",
         "tagPrefixList": ["v", "latest", "dev", "prod"],
         "countType": "imageCountMoreThan",
-        "countNumber": 3
+        "countNumber": 1
       },
       "action": {
         "type": "expire"
