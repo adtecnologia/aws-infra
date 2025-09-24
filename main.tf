@@ -38,3 +38,15 @@ module "plane" {
   source = "./projects/plane"
   region = var.region
 }
+
+# Módulo para infraestrutura do for+
+module "forplus" {
+  source = "./projects/forplus"
+  region = var.region
+}
+
+# Módulo para infraestrutura do Petlove
+module "petlove" {
+  source = "./projects/petlove"
+  region = var.region
+}

@@ -41,6 +41,40 @@ output "luxtoon_complete_user_secret_access_key" {
 }
 
 # =============================================================================
-# ESPAÇO PARA OUTPUTS DOS OUTROS PROJETOS (PLANE)
+# OUTPUTS DO PROJETO PETLOVE
 # =============================================================================
-# Adicionar conforme necessário quando os outros projetos tiverem outputs
+
+output "petlove_user_name" {
+  description = "Nome do usuário IAM completo do Petlove"
+  value       = module.petlove.petlove_complete_user_name
+}
+
+output "petlove_user_access_key_id" {
+  description = "Access Key ID do usuário IAM completo do Petlove"
+  value       = module.petlove.petlove_complete_user_access_key_id
+}
+
+output "petlove_complete_user_secret_access_key" {
+  description = "Secret Access Key do usuário IAM completo do Petlove"
+  value       = module.petlove.petlove_complete_user_secret_access_key
+  sensitive   = true
+}
+
+# =============================================================================
+# OUTPUTS DO PROJETO FOR+
+# =============================================================================
+output "forplus_user_name" {
+  description = "Nome do usuário IAM completo do For+"
+  value       = module.forplus.forplus_complete_user_name
+}
+
+output "forplus_user_access_key_id" {
+  description = "Access Key ID do usuário IAM completo do For+"
+  value       = module.forplus.forplus_complete_user_access_key_id
+}
+
+output "forplus_complete_user_secret_access_key" {
+  description = "Secret Access Key do usuário IAM completo do For+"
+  value       = module.forplus.forplus_complete_user_secret_access_key
+  sensitive   = true
+}
