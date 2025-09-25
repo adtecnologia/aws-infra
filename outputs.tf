@@ -4,11 +4,6 @@
 # OUTPUTS DO PROJETO UGO-APP
 # =============================================================================
 
-output "ugo_app_user_name" {
-  description = "Nome do usuário IAM completo do UGO App"
-  value       = module.ugo-app.ugo_complete_user_name
-}
-
 output "ugo_app_user_access_key_id" {
   description = "Access Key ID do usuário IAM completo do UGO App"
   value       = module.ugo-app.ugo_complete_user_access_key_id
@@ -23,11 +18,6 @@ output "ugo_app_complete_user_secret_access_key" {
 # =============================================================================
 # OUTPUTS DO PROJETO LUXTOON
 # =============================================================================
-
-output "luxtoon_user_name" {
-  description = "Nome do usuário IAM completo do Luxtoon"
-  value       = module.luxtoon.luxtoon_complete_user_name
-}
 
 output "luxtoon_user_access_key_id" {
   description = "Access Key ID do usuário IAM completo do Luxtoon"
@@ -44,11 +34,6 @@ output "luxtoon_complete_user_secret_access_key" {
 # OUTPUTS DO PROJETO PETLOVE
 # =============================================================================
 
-output "petlove_user_name" {
-  description = "Nome do usuário IAM completo do Petlove"
-  value       = module.petlove.petlove_complete_user_name
-}
-
 output "petlove_user_access_key_id" {
   description = "Access Key ID do usuário IAM completo do Petlove"
   value       = module.petlove.petlove_complete_user_access_key_id
@@ -63,10 +48,6 @@ output "petlove_complete_user_secret_access_key" {
 # =============================================================================
 # OUTPUTS DO PROJETO FOR+
 # =============================================================================
-output "forplus_user_name" {
-  description = "Nome do usuário IAM completo do For+"
-  value       = module.forplus.forplus_complete_user_name
-}
 
 output "forplus_user_access_key_id" {
   description = "Access Key ID do usuário IAM completo do For+"

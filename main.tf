@@ -1,6 +1,3 @@
-# Configuração principal do Terraform para infraestrutura AWS
-# Este arquivo gerencia múltiplos projetos através de módulos
-
 terraform {
   required_providers {
     aws = {

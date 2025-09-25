@@ -8,6 +8,10 @@ resource "aws_iam_user" "ugo_complete_user" {
     Project     = "ugo-app"
     Environment = "production"
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Anexa a política de acesso ao ECR ao usuário completo
@@ -25,4 +29,7 @@ resource "aws_iam_user_policy_attachment" "complete_user_s3_access" {
 # Cria chaves de acesso para o usuário completo
 resource "aws_iam_access_key" "complete_user_key" {
   user = aws_iam_user.ugo_complete_user.name
+  lifecycle {
+    prevent_destroy = true
+  }
 }

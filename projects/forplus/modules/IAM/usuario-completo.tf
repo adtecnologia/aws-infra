@@ -25,4 +25,7 @@ resource "aws_iam_user_policy_attachment" "complete_user_s3_access" {
 # Cria chaves de acesso para o usuário completo
 resource "aws_iam_access_key" "complete_user_key" {
   user = aws_iam_user.forplus_complete_user.name
+  lifecycle {
+    prevent_destroy = true
+  }
 }
