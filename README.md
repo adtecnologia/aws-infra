@@ -6,6 +6,33 @@
   <img src="https://skillicons.dev/icons?i=docker,debian" alt="DynamoDB, Lambda, CloudFront & Redis" height="48"/>
 </p>
 
+## 🚀 Quick Start
+
+### Terraform Checks e Linting
+
+Este projeto conta com verificações automáticas de Terraform que rodam a cada commit:
+
+- **🔧 Formatação**: `terraform fmt -check -recursive`  
+- **✅ Validação**: `terraform validate` em todas as configurações
+- **🔍 Análise Estática**: TFLint com regras AWS
+- **🤖 CI/CD**: GitHub Actions para verificações automáticas
+
+### Comandos Rápidos
+
+```bash
+# Rodar todos os checks localmente
+make check
+
+# Formatar todos os arquivos
+make fmt
+
+# Validar configurações
+make validate
+
+# Executar linter
+make lint
+```
+
 ## Inicialização do Projeto
 
 Para iniciar o projeto de infraestrutura AWS, é necessário utilizar a **conta root da AD**, atualmente sob posse de **Daniel de Lima Mazali**. Certifique-se de ter as credenciais apropriadas antes de executar qualquer comando.
@@ -69,8 +96,55 @@ aws-infra
 ## Requisitos
 
 - Acesso à conta root da AD.
-- <img src="https://skillicons.dev/icons?i=aws" alt="AWS CLI" height="20"/> [AWS CLI](https://aws.amazon.com/cli/) configurado.
-- <img src="https://skillicons.dev/icons?i=terraform" alt="Terraform" height="20"/> [Terraform](https://www.terraform.io/downloads.html) instalado.
+- AWS CLI configurado.
+- Terraform instalado.
+- (Opcional) TFLint para análise estática adicional
+
+## 🔧 Ferramentas e Workflows
+
+### GitHub Actions
+
+O projeto possui workflows automatizados:
+
+- **terraform-check.yml**: Roda em pushes e PRs
+  - ✅ Verifica formatação (`terraform fmt -check`)
+  - ✅ Valida sintaxe (`terraform validate`)  
+  - ✅ Executa TFLint para análise estática
+  - ✅ Testa todos os projetos individualmente
+  - 💬 Comenta resultados em PRs
+
+- **terraform-format.yml**: Auto-formatação
+  - 🤖 Formata arquivos automaticamente após pushes
+  - 📝 Faz commit das correções de formatação
+
+### Pre-commit Hook
+
+Um hook local está disponível em `.git/hooks/pre-commit` que:
+- ✅ Verifica formatação antes do commit
+- ✅ Valida configurações Terraform
+- ❌ Bloqueia commits com problemas
+
+### Makefile Commands
+
+```bash
+make help          # Mostra todos os comandos disponíveis
+make fmt           # Formata todos os arquivos .tf
+make fmt-check     # Verifica formatação sem alterar
+make validate      # Valida todas as configurações
+make lint          # Executa TFLint 
+make check         # Executa todos os checks
+make test          # Roda terraform plan (dry-run)
+make clean         # Remove arquivos temporários
+make install-tools # Instala ferramentas necessárias
+```
+
+### TFLint Configuration
+
+O arquivo `.tflint.hcl` configura:
+- Regras recomendadas do Terraform
+- Plugin AWS com validações específicas
+- Convenções de nomenclatura
+- Validações de estrutura de módulos
 
 ---
 > Para dúvidas ou acesso, contate Daniel de Lima Mazali.

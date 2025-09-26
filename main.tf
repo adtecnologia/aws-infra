@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 # Módulo para infraestrutura do UGO App
-module "ugo-app" {
+module "ugo_app" {
   source = "./projects/ugo-app"
   region = var.region
 }

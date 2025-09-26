@@ -35,14 +35,14 @@ resource "aws_s3_bucket_website_configuration" "petlove_web" {
 # Política pública para acesso ao website
 resource "aws_s3_bucket_policy" "petlove_web_public" {
   bucket = aws_s3_bucket.petlove_web.id
-  
+
   depends_on = [aws_s3_bucket_public_access_block.petlove_web]
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Effect    = "Allow"
         Principal = "*"
         Action = [
           "s3:GetObject"
