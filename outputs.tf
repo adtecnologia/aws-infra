@@ -6,12 +6,12 @@
 
 output "ugo_app_user_access_key_id" {
   description = "Access Key ID do usuário IAM completo do UGO App"
-  value       = module.ugo-app.ugo_complete_user_access_key_id
+  value       = module.ugo_app.ugo_complete_user_access_key_id
 }
 
 output "ugo_app_complete_user_secret_access_key" {
   description = "Secret Access Key do usuário IAM completo do UGO App"
-  value       = module.ugo-app.ugo_complete_user_secret_access_key
+  value       = module.ugo_app.ugo_complete_user_secret_access_key
   sensitive   = true
 }
 
