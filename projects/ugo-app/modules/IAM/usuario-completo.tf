@@ -26,6 +26,12 @@ resource "aws_iam_user_policy_attachment" "complete_user_s3_access" {
   policy_arn = aws_iam_policy.s3_bucket_access.arn
 }
 
+# Anexa a política de acesso ao CloudFront ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_cloudfront_access" {
+  user       = aws_iam_user.ugo_complete_user.name
+  policy_arn = aws_iam_policy.cloudfront_access.arn
+}
+
 # Cria chaves de acesso para o usuário completo
 resource "aws_iam_access_key" "complete_user_key" {
   user = aws_iam_user.ugo_complete_user.name

@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "s3_bucket_access" {
-  name        = "s3-ugo-private-access"
-  description = "permissão de acesso ao bucket ugo-private"
+  name        = "s3-ugo-access"
+  description = "permissão de acesso aos buckets do ugo app"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -17,7 +17,9 @@ resource "aws_iam_policy" "s3_bucket_access" {
           "arn:aws:s3:::ugo-private",
           "arn:aws:s3:::ugo-private/*",
           "arn:aws:s3:::ugo-private-dev",
-          "arn:aws:s3:::ugo-private-dev/*"
+          "arn:aws:s3:::ugo-private-dev/*",
+          "arn:aws:s3:::ugo-adm-front",
+          "arn:aws:s3:::ugo-adm-front/*"
         ]
       }
     ]

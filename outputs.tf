@@ -15,6 +15,21 @@ output "ugo_app_complete_user_secret_access_key" {
   sensitive   = true
 }
 
+# output "ugo_app_cloudfront_url" {
+#   description = "URL HTTPS do CloudFront para o UGO Admin Frontend"
+#   value       = module.ugo_app.cloudfront_url
+# }
+
+# output "ugo_app_cloudfront_domain" {
+#   description = "Domínio CloudFront para o UGO Admin Frontend"
+#   value       = module.ugo_app.cloudfront_domain_name
+# }
+
+# output "ugo_app_s3_website_url" {
+#   description = "URL do S3 website para o UGO Admin Frontend"
+#   value       = module.ugo_app.s3_website_url
+# }
+
 # =============================================================================
 # OUTPUTS DO PROJETO LUXTOON
 # =============================================================================
