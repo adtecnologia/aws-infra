@@ -11,12 +11,14 @@ terraform {
     key     = "terraform.tfstate"
     region  = "sa-east-1"
     encrypt = true
+    profile = "ad-soluções"
   }
 }
 
 # Configuração do provedor AWS
 provider "aws" {
   region = var.region.brasil
+  profile = "ad-soluções"
 }
 
 # Módulo para infraestrutura do UGO App
