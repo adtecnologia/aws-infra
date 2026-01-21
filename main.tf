@@ -50,3 +50,9 @@ module "petlove" {
   source = "./projects/petlove"
   region = var.region
 }
+
+# Módulo para infraestrutura do haras
+module "haras" {
+  source = "./projects/haras"
+  region = var.region
+}

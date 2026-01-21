@@ -1,0 +1,41 @@
+# Usuário IAM com acesso completo aos recursos Haras
+resource "aws_iam_user" "haras_complete_user" {
+  name = "haras-complete-user"
+  path = "/"
+
+  tags = {
+    Name        = "Haras Complete User"
+    Project     = "haras-app"
+    Environment = "production"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+# Anexa a política de acesso ao ECR ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_ecr_access" {
+  user       = aws_iam_user.haras_complete_user.name
+  policy_arn = aws_iam_policy.ecr_repo_access.arn
+}
+
+# Anexa a política de acesso ao S3 ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_s3_access" {
+  user       = aws_iam_user.haras_complete_user.name
+  policy_arn = aws_iam_policy.s3_bucket_access.arn
+}
+
+# Anexa a política de acesso ao CloudFront ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_cloudfront_access" {
+  user       = aws_iam_user.haras_complete_user.name
+  policy_arn = aws_iam_policy.cloudfront_access.arn
+}
+
+# Cria chaves de acesso para o usuário completo
+resource "aws_iam_access_key" "complete_user_key" {
+  user = aws_iam_user.haras_complete_user.name
+  lifecycle {
+    prevent_destroy = true
+  }
+}
