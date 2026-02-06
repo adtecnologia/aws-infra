@@ -89,3 +89,18 @@ output "haras_complete_user_secret_access_key" {
   value       = module.haras.haras_complete_user_secret_access_key
   sensitive   = true
 }
+
+# =============================================================================
+# OUTPUTS DO PROJETO VMPAY
+# =============================================================================
+
+output "vmpay_user_access_key_id" {
+  description = "Access Key ID do usuário IAM completo do VMPay"
+  value       = module.vmpay.iam_complete_user_access_key_id
+}
+
+output "vmpay_complete_user_secret_access_key" {
+  description = "Secret Access Key do usuário IAM completo do VMPay"
+  value       = module.vmpay.iam_complete_user_secret_access_key
+  sensitive   = true
+}

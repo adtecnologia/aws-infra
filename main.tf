@@ -56,3 +56,9 @@ module "haras" {
   source = "./projects/haras"
   region = var.region
 }
+
+# Módulo para infraestrutura do vmpay
+module "vmpay" {
+  source = "./projects/vmpay"
+  region = var.region
+}

@@ -1,5 +1,5 @@
 # Origin Access Control para restringir acesso direto ao S3
-resource "aws_cloudfront_origin_access_control" "haras_adm_front" {
+resource "aws_cloudfront_origin_access_control" "haras_front" {
   name                              = "haras-adm-front-oac"
   description                       = "Origin Access Control for Haras Admin Frontend"
   origin_access_control_origin_type = "s3"
@@ -8,11 +8,11 @@ resource "aws_cloudfront_origin_access_control" "haras_adm_front" {
 }
 
 # CloudFront Distribution para o Haras Admin Frontend
-resource "aws_cloudfront_distribution" "haras_adm_front" {
+resource "aws_cloudfront_distribution" "haras_front" {
   origin {
     domain_name              = var.s3_bucket_domain_name
     origin_id                = "S3-${var.s3_bucket_name}"
-    origin_access_control_id = aws_cloudfront_origin_access_control.haras_adm_front.id
+    origin_access_control_id = aws_cloudfront_origin_access_control.haras_front.id
   }
 
   enabled             = true
@@ -20,7 +20,7 @@ resource "aws_cloudfront_distribution" "haras_adm_front" {
   comment             = "CloudFront distribution para Haras Admin Frontend"
   default_root_object = "index.html"
 
-  aliases = ["haras-admin.adsolucoestecnologia.com.br"]
+  aliases = ["haras.rebucci.adsolucoestecnologia.com.br"]
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -70,20 +70,15 @@ resource "aws_cloudfront_distribution" "haras_adm_front" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.haras_adm_front.arn
+    acm_certificate_arn      = aws_acm_certificate.haras_front.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
-  depends_on = [aws_acm_certificate_validation.haras_adm_front]
-
-  tags = {
-    name = "haras-adm-front-cdn"
-    env  = "prod"
-  }
+  depends_on = [aws_acm_certificate_validation.haras_front]
 }
 
 # Configuração de acesso PRIVADO para o bucket (só CloudFront pode acessar)
-resource "aws_s3_bucket_public_access_block" "haras_adm_front_private" {
+resource "aws_s3_bucket_public_access_block" "haras_front_private" {
   bucket = var.s3_bucket_name
 
   block_public_acls       = true
@@ -93,9 +88,9 @@ resource "aws_s3_bucket_public_access_block" "haras_adm_front_private" {
 }
 
 # Política do bucket S3 para permitir apenas acesso via CloudFront OAC
-resource "aws_s3_bucket_policy" "haras_adm_front_cloudfront_only" {
+resource "aws_s3_bucket_policy" "haras_front_cloudfront_only" {
   bucket     = var.s3_bucket_name
-  depends_on = [aws_s3_bucket_public_access_block.haras_adm_front_private]
+  depends_on = [aws_s3_bucket_public_access_block.haras_front_private]
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -110,7 +105,7 @@ resource "aws_s3_bucket_policy" "haras_adm_front_cloudfront_only" {
         Resource = "${var.s3_bucket_arn}/*"
         Condition = {
           StringEquals = {
-            "AWS:SourceArn" = aws_cloudfront_distribution.haras_adm_front.arn
+            "AWS:SourceArn" = aws_cloudfront_distribution.haras_front.arn
           }
         }
       }
@@ -120,8 +115,8 @@ resource "aws_s3_bucket_policy" "haras_adm_front_cloudfront_only" {
 
 
 # Certificado SSL para domínio customizado (CRIAR NA us-east-1)
-resource "aws_acm_certificate" "haras_adm_front" {
-  domain_name       = "haras-admin.adsolucoestecnologia.com.br"
+resource "aws_acm_certificate" "haras_front" {
+  domain_name       = "haras.rebucci.adsolucoestecnologia.com.br"
   validation_method = "DNS"
   region            = "us-east-1"
 
@@ -129,14 +124,10 @@ resource "aws_acm_certificate" "haras_adm_front" {
     create_before_destroy = true
   }
 
-  tags = {
-    name = "haras-adm-front-ssl"
-    env  = "prod"
-  }
 }
 
-resource "aws_acm_certificate_validation" "haras_adm_front" {
-  certificate_arn         = aws_acm_certificate.haras_adm_front.arn
+resource "aws_acm_certificate_validation" "haras_front" {
+  certificate_arn         = aws_acm_certificate.haras_front.arn
   region                  = "us-east-1"
-  validation_record_fqdns = ["_54d7b9ad7348ae3b5979f4fa86519522.haras-admin.adsolucoestecnologia.com.br."] # Preencha manualmente se não usar Route53
+  validation_record_fqdns = [for record in aws_acm_certificate.haras_front.domain_validation_options : record.resource_record_name]
 }
