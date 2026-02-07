@@ -29,7 +29,7 @@ resource "aws_iam_policy" "ecr_policy" {
           "ecr:BatchDeleteImage"
         ],
         Resource = [
-          "arn:aws:ecr:us-east-1:769998260029:repository/vmpay-image-repo"
+          "arn:aws:ecr:sa-east-1:769998260029:repository/vmpay-image-repo"
         ]
       }
     ]
