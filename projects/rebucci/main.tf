@@ -1,4 +1,4 @@
-# Infraestrutura do projeto UGO App
+# Infraestrutura do projeto rebucci
 
 module "CloudFront" {
   source                = "./modules/CloudFront"
@@ -12,12 +12,4 @@ module "CloudFront" {
 module "S3" {
   source = "./modules/S3"
   region = var.region
-}
-
-module "IAM" {
-  source = "./modules/IAM"
-}
-
-module "ECR" {
-  source = "./modules/ECR"
 }

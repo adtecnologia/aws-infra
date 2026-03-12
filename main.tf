@@ -17,7 +17,7 @@ terraform {
 
 # Configuração do provedor AWS
 provider "aws" {
-  region = var.region.brasil
+  region  = var.region.brasil
   profile = "ad-soluções"
 }
 
@@ -60,5 +60,17 @@ module "haras" {
 # Módulo para infraestrutura do vmpay
 module "vmpay" {
   source = "./projects/vmpay"
+  region = var.region
+}
+
+# Módulo para infraestrutura do adflow
+module "adflow" {
+  source = "./projects/adflow"
+  region = var.region
+}
+
+# Módulo para infraestrutura do rebucci
+module "rebucci" {
+  source = "./projects/rebucci"
   region = var.region
 }
