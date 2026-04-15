@@ -1,0 +1,41 @@
+# Usuário IAM com acesso completo aos recursos Helpdesk
+resource "aws_iam_user" "helpdesk_complete_user" {
+  name = "helpdesk-complete-user"
+  path = "/"
+
+  tags = {
+    Name        = "Helpdesk Complete User"
+    Project     = var.project
+    Environment = var.environment
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+# Anexa a política de acesso ao ECR ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_ecr_access" {
+  user       = aws_iam_user.helpdesk_complete_user.name
+  policy_arn = aws_iam_policy.ecr_repo_access.arn
+}
+
+# Anexa a política de acesso ao S3 ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_s3_access" {
+  user       = aws_iam_user.helpdesk_complete_user.name
+  policy_arn = aws_iam_policy.s3_bucket_access.arn
+}
+
+# Anexa a política de acesso ao CloudFront ao usuário completo
+resource "aws_iam_user_policy_attachment" "complete_user_cloudfront_access" {
+  user       = aws_iam_user.helpdesk_complete_user.name
+  policy_arn = aws_iam_policy.cloudfront_access.arn
+}
+
+# Cria chaves de acesso para o usuário completo
+resource "aws_iam_access_key" "complete_user_key" {
+  user = aws_iam_user.helpdesk_complete_user.name
+  lifecycle {
+    prevent_destroy = true
+  }
+}

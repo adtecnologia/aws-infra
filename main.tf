@@ -74,3 +74,15 @@ module "rebucci" {
   source = "./projects/rebucci"
   region = var.region
 }
+
+# Módulo para infraestrutura do Helpdesk
+module "helpdesk" {
+  source = "./projects/helpdesk"
+  region = var.region
+}
+
+# Módulo para infraestrutura do formais
+module "formais" {
+  source = "./projects/formais"
+  region = var.region
+}

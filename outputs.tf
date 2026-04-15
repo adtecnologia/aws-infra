@@ -104,3 +104,4 @@ output "vmpay_complete_user_secret_access_key" {
   value       = module.vmpay.iam_complete_user_secret_access_key
   sensitive   = true
 }
+

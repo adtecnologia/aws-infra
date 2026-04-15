@@ -1,20 +1,20 @@
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
-# S3 Bucket para hospedagem estática do front-end adflow
-resource "aws_s3_bucket" "adflow_front" {
-  bucket = "adflow-front"
+# S3 Bucket para hospedagem estática do front-end formais
+resource "aws_s3_bucket" "formais_front" {
+  bucket = "formais-front"
 
   tags = {
-    Name        = "adflow Frontend"
-    Project     = "adflow"
+    Name        = "formais Frontend"
+    Project     = "formais"
     Environment = "production"
   }
 }
 
 # Configuração de hosting estático
-resource "aws_s3_bucket_website_configuration" "adflow_front" {
-  bucket = aws_s3_bucket.adflow_front.bucket
+resource "aws_s3_bucket_website_configuration" "formais_front" {
+  bucket = aws_s3_bucket.formais_front.bucket
 
   index_document {
     suffix = "index.html"
@@ -26,8 +26,8 @@ resource "aws_s3_bucket_website_configuration" "adflow_front" {
 }
 
 # Block public access - tudo bloqueado (acesso só via CloudFront)
-resource "aws_s3_bucket_public_access_block" "adflow_front" {
-  bucket = aws_s3_bucket.adflow_front.id
+resource "aws_s3_bucket_public_access_block" "formais_front" {
+  bucket = aws_s3_bucket.formais_front.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -36,8 +36,8 @@ resource "aws_s3_bucket_public_access_block" "adflow_front" {
 }
 
 # Lifecycle policy para limpar versões antigas
-resource "aws_s3_bucket_lifecycle_configuration" "adflow_front" {
-  bucket = aws_s3_bucket.adflow_front.id
+resource "aws_s3_bucket_lifecycle_configuration" "formais_front" {
+  bucket = aws_s3_bucket.formais_front.id
 
   rule {
     id     = "abort-incomplete-multipart-upload"
