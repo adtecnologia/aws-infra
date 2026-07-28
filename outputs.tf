@@ -105,3 +105,60 @@ output "vmpay_complete_user_secret_access_key" {
   sensitive   = true
 }
 
+# =============================================================================
+# OUTPUTS DO PROJETO AUDITORIA
+# =============================================================================
+
+output "auditoria_s3_bucket_name" {
+  description = "Nome do bucket S3 do Auditoria frontend"
+  value       = module.auditoria.s3_bucket_name
+}
+
+output "auditoria_cloudfront_url" {
+  description = "URL HTTPS do CloudFront para o Auditoria"
+  value       = module.auditoria.cloudfront_url
+}
+
+output "auditoria_cloudfront_domain" {
+  description = "Domínio CloudFront para o Auditoria"
+  value       = module.auditoria.cloudfront_domain_name
+}
+
+# =============================================================================
+# OUTPUTS DO PROJETO PGRS
+# =============================================================================
+
+output "pgrs_s3_bucket_name" {
+  description = "Nome do bucket S3 do PGRs frontend"
+  value       = module.pgrs.s3_bucket_name
+}
+
+output "pgrs_cloudfront_url" {
+  description = "URL HTTPS do CloudFront para o PGRs"
+  value       = module.pgrs.cloudfront_url
+}
+
+output "pgrs_cloudfront_domain" {
+  description = "Domínio CloudFront para o PGRs"
+  value       = module.pgrs.cloudfront_domain_name
+}
+
+# =============================================================================
+# OUTPUTS DO PROJETO SOCIAL
+# =============================================================================
+
+output "social_s3_bucket_name" {
+  description = "Nome do bucket S3 para o Social"
+  value       = module.social.s3_bucket_name
+}
+
+output "social_cloudfront_url" {
+  description = "URL do CloudFront para o Social"
+  value       = module.social.cloudfront_url
+}
+
+output "social_cloudfront_domain" {
+  description = "Domínio CloudFront para o Social"
+  value       = module.social.cloudfront_domain_name
+}
+

@@ -19,7 +19,7 @@ module "ECR" {
 }
 
 module "IAM" {
-  source                    = "./modules/IAM"
-  s3_bucket_name            = module.S3.s3_bucket_name
+  source                     = "./modules/IAM"
+  s3_bucket_name             = module.S3.s3_bucket_name
   cloudfront_distribution_id = module.CloudFront.cloudfront_distribution_id
 }

@@ -75,6 +75,18 @@ module "rebucci" {
   region = var.region
 }
 
+# Módulo para infraestrutura do postorebucci
+module "postorebucci" {
+  source = "./projects/postorebucci"
+  region = var.region
+}
+
+# Módulo para infraestrutura do fiscalintelligence
+module "fiscalintelligence" {
+  source = "./projects/fiscalintelligence"
+  region = var.region
+}
+
 # Módulo para infraestrutura do Helpdesk
 module "helpdesk" {
   source = "./projects/helpdesk"
@@ -84,5 +96,29 @@ module "helpdesk" {
 # Módulo para infraestrutura do formais
 module "formais" {
   source = "./projects/formais"
+  region = var.region
+}
+
+# Módulo para infraestrutura do Auditoria
+module "auditoria" {
+  source = "./projects/auditoria"
+  region = var.region
+}
+
+# Módulo para infraestrutura do PGRs
+module "pgrs" {
+  source = "./projects/pgrs"
+  region = var.region
+}
+
+# Módulo para infraestrutura do Social
+module "social" {
+  source = "./projects/social"
+  region = var.region
+}
+
+# Módulo para infraestrutura do mpijoinville
+module "mpijoinville" {
+  source = "./projects/mpijoinville"
   region = var.region
 }
