@@ -122,3 +122,9 @@ module "mpijoinville" {
   source = "./projects/mpijoinville"
   region = var.region
 }
+
+# Módulo para infraestrutura do timerebucci
+module "timerebucci" {
+  source = "./projects/timerebucci"
+  region = var.region
+}
